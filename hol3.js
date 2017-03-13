@@ -12,18 +12,24 @@ var products = [
     {id: 3, name: "Daim", price: 3.2}
 ];
 
+function getProductById(id) {
+    var matches = products.filter(function (product) {
+        return (product.id == id);
+    });
+
+    return matches[0];
+}
+
 app.get('/', function (req, res) {
     res.send('Hello World')
 });
 
 app.get('/products', function (req, res) {
     if (req.query.id) {
-        var match = products.filter(function (product) {
-            return (product.id == req.query.id);
-        });
+        var product = getProductById(req.query.id);
 
-        if (match.length > 0) {
-            res.send(match);
+        if (product) {
+            res.send(product);
         } else {
             res.sendStatus(404);
         }
@@ -34,8 +40,10 @@ app.get('/products', function (req, res) {
 
 app.post('/products', function (req, res) {
     var product = req.body;
+    var id = product.id;
     products.push(product);
-    res.send(products);
+
+    res.send(getProductById(id));
 });
 
 app.delete('/products', function (req, res) {
